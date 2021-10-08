@@ -23,7 +23,7 @@ class App extends Component {
         })
         .then(data => {
             //Sort array so checked items to to the end of the array
-              data.sort((a, b) => {
+            data.sort((a, b) => {
                 return a.checked - b.checked 
             });
             this.setState({ todoItem: data })

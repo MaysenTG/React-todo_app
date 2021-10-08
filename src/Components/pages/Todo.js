@@ -6,7 +6,8 @@ class Todo extends Component {
         super(props)
         this.state = { 
             todoitem: this.props.todoItem,
-            progress: 0
+            progress: 0,
+            showProgress: false
         }
     }
     
@@ -115,6 +116,13 @@ class Todo extends Component {
         progressPercentage = (completed / total) * 100;
         
         this.setState({ progress: progressPercentage })
+    }
+    
+    componentDidMount() {
+        //Sort array so checked items to to the end of the array
+        this.state.todoitem.sort((a, b) => {
+            return a.checked - b.checked 
+        });
     }
     
     
