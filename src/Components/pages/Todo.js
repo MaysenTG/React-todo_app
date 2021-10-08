@@ -6,6 +6,7 @@ class Todo extends Component {
         super(props)
         this.state = { 
             todoitem: this.props.todoItem,
+            progress: 0
         }
     }
     
@@ -60,30 +61,30 @@ class Todo extends Component {
     }
     
     handleComplete = (todoItem) => {
-
         //Remove old item from object        
         const newObj = this.state.todoitem.filter(item => item !== todoItem)
         
         //Change complete status
-        if(todoItem.checked) {
-            todoItem.checked = false;
+        if(todoItem.completed) {
+            todoItem.completed = false;
         }
         else {
-            todoItem.checked = true;
+            todoItem.completed = true;
         }
         
         newObj.push(todoItem)
         
         //Sort array so checked items to to the end of the array
         newObj.sort((a, b) => {
-           return a.checked - b.checked 
+           return a.completed - b.completed 
         });
+        
+        this.handleProgress();
         
         this.setState({ todoitem: newObj })
     }
     
     handleUpdate = (todoList) => {
-        //var obj = {"title": item, "completed": checked}
         fetch("http://localhost:8000/todo-item", {
         method: "POST",
         headers: {
@@ -94,6 +95,23 @@ class Todo extends Component {
         })
     }
     
+    handleProgress(){
+        let completed = 0;
+        let total = 0
+        let progressPercentage = 0;
+        
+        this.state.todoitem.forEach(function (eachItem) {
+            if(eachItem.completed) {
+                completed++;
+            }
+            total++;
+        });
+        
+        progressPercentage = (completed / total) * 100;
+        
+        this.setState({ progress: progressPercentage })
+    }
+    
     
     render() {
         return (
@@ -101,16 +119,23 @@ class Todo extends Component {
                 <br/>
                 <div className="container-fluid">
                     <h1>Current to do items</h1>
+                    <br/>
+                    
+                    <div className="progress-div" style={{width: `100`}}>
+                        <div style={{ width: `${this.state.progress}%`, backgroundColor: '#0d6efd' }} className="progress" />
+                    </div>
+                    <br/>
+                    
                     <ul className="list-group d-flex justify-content-between">
                         {this.state.todoitem
                         
                         // If the item is checked, put a cross over the item, otherwise, display it as normal
                         .map(d => {
-                            if (d.checked)
-                                return <li key={d.title} id="todoItem" className="bg-light list-group-item d-flex justify-content-between"><div><input onClick={() => {this.handleComplete(d)}} className="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked={d.checked}/>&nbsp; &nbsp; <del>{d.title}</del></div><button className="btn-close" onClick={() => { this.handleDelete(d) }} aria-label="Close"></button></li>
+                            if (d.completed)
+                                return <li key={d.title} id="todoItem" className="bg-light list-group-item d-flex justify-content-between"><div><input onClick={() => {this.handleComplete(d)}} className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>&nbsp; &nbsp; <del>{d.title}</del></div><button className="btn-close" onClick={() => { this.handleDelete(d) }} aria-label="Close"></button></li>
                                 
                             else
-                                return <li key={d.title} id="todoItem" className="list-group-item d-flex justify-content-between"><div><input onClick={() => {this.handleComplete(d)}} className="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked={d.checked}/>&nbsp; &nbsp; {d.title}</div><button className="btn-close" onClick={() => { this.handleDelete(d) }} aria-label="Close"></button></li>
+                                return <li key={d.title} id="todoItem" className="list-group-item d-flex justify-content-between"><div><input onClick={() => {this.handleComplete(d)}} className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>&nbsp; &nbsp; {d.title}</div><button className="btn-close" onClick={() => { this.handleDelete(d) }} aria-label="Close"></button></li>
                         })}
                     </ul>
                 </div>
