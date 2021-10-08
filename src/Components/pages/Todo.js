@@ -27,6 +27,7 @@ class Todo extends Component {
         }
         e.target.InputTodoTitle.value = '';
     }
+    3
     
     addItem(item, checked) {
         var obj = {"title": item, "completed": checked}
@@ -81,12 +82,16 @@ class Todo extends Component {
         
         this.handleProgress();
         
+        this.handleUpdate(todoItem);
+        
         this.setState({ todoitem: newObj })
     }
     
     handleUpdate = (todoList) => {
-        fetch("http://localhost:8000/todo-item", {
-        method: "POST",
+        console.log("ID is: "+todoList.id)
+        const url = "http://localhost:8000/todo-item/"+todoList.id
+        fetch(url, {
+        method: "PUT",
         headers: {
             "Content-Type": "application/json"
         },
@@ -119,9 +124,9 @@ class Todo extends Component {
                 <br/>
                 <div className="container-fluid">
                     <h1>Current to do items</h1>
-                    <br/>
                     
-                    <div className="progress-div" style={{width: `100`}}>
+                    <br/>
+                    <div className="progress-div d-flex" style={{width: `100`}}>
                         <div style={{ width: `${this.state.progress}%`, backgroundColor: '#0d6efd' }} className="progress" />
                     </div>
                     <br/>
@@ -132,7 +137,7 @@ class Todo extends Component {
                         // If the item is checked, put a cross over the item, otherwise, display it as normal
                         .map(d => {
                             if (d.completed)
-                                return <li key={d.title} id="todoItem" className="bg-light list-group-item d-flex justify-content-between"><div><input onClick={() => {this.handleComplete(d)}} className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>&nbsp; &nbsp; <del>{d.title}</del></div><button className="btn-close" onClick={() => { this.handleDelete(d) }} aria-label="Close"></button></li>
+                                return <li key={d.title} id="todoItem" className="bg-light list-group-item d-flex justify-content-between"><div><input onClick={() => {this.handleComplete(d)}} className="form-check-input" type="checkbox" value="" id="flexCheckDefault" defaultChecked={true}/>&nbsp; &nbsp; <del>{d.title}</del></div><button className="btn-close" onClick={() => { this.handleDelete(d) }} aria-label="Close"></button></li>
                                 
                             else
                                 return <li key={d.title} id="todoItem" className="list-group-item d-flex justify-content-between"><div><input onClick={() => {this.handleComplete(d)}} className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>&nbsp; &nbsp; {d.title}</div><button className="btn-close" onClick={() => { this.handleDelete(d) }} aria-label="Close"></button></li>
@@ -149,7 +154,7 @@ class Todo extends Component {
                             <label htmlFor="InputTodoTitle" className="form-label">Add new Todo item</label>
                             <input type="text" className="form-control" placeholder="Take the dog for a walk" id="InputTodoTitle" aria-describedby="emailHelp"/>
                         </div>
-                        <button type="submit" className="btn btn-primary">Submit</button>
+                        <button type="submit" className="btn btn-primary">Add</button>
                     </form>
                 </div>
             </div>
