@@ -10,25 +10,31 @@ class App extends Component {
     super(props)
     this.state = { 
         todoitem: null,
-        
         isLoading: true
     }
   }
   
-  //Loads the JSON file todolist items when the app loads
+  //Loads the JSON data from the local storage todo-list item when the app loads
   componentDidMount() {
-    fetch('http://localhost:8000/todo-item')
-        .then(res => {
-            return res.json();
-        })
-        .then(data => {
-            //Sort array so checked items to to the end of the array
-            data.sort((a, b) => {
-                return a.checked - b.checked 
-            });
-            this.setState({ todoItem: data })
-            this.setState({ isLoading: false })
-        })
+    const todoData = JSON.parse(localStorage.getItem("todo-list"))
+    
+    if(todoData){ 
+      todoData.sort((a, b) => {
+        return a.checked - b.checked 
+      });
+      
+      this.setState({ todoitem: todoData }) 
+    }
+    
+    // If no list is found, create a single item for demonstration purposes
+    else {
+      this.setState({ todoitem: [{
+        "title": "My first todo item",
+        "completed": false
+      }] })
+    }
+    
+    this.setState({ isLoading: false })
   }
   
   render() {
@@ -36,7 +42,7 @@ class App extends Component {
       <Router>
           <div>
             <Navbar />  
-            {this.state.todoItem && <Todo todoItem={this.state.todoItem}/> }
+            {this.state.todoitem && <Todo todoItem={this.state.todoitem}/> }
             
             {this.state.isLoading &&
             <div className="h-400 d-flex justify-content-center align-items-center">
@@ -47,7 +53,7 @@ class App extends Component {
               </div> 
             </div>
             }
-            
+                   
           </div>
       </Router>
     );  

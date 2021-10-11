@@ -1,21 +1,6 @@
 {
   "todo-item": [
     {
-      "title": "Oh nooo",
-      "completed": true,
-      "id": 13
-    },
-    {
-      "title": "Hey",
-      "completed": false,
-      "id": 15
-    },
-    {
-      "title": "Walk dog",
-      "completed": false,
-      "id": 16
-    },
-    {
       "title": "Eat dinner",
       "completed": false,
       "id": 17
