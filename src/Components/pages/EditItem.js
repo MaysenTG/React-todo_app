@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Modal, Button } from 'react-bootstrap'
 
 class EditItem extends Component {
     constructor(props) {
@@ -7,19 +8,33 @@ class EditItem extends Component {
             visibility: this.props.visibility,
             editItem: this.props.itemToEdit,
             todoList: this.props.allTodos,
-            newInputValue: ''
+            newInputValue: '',
+            showModal: true
         }
     }
 
     makeChanges() {
-        const itemToEdit = this.state.editItem
-        const listWithoutItem = this.state.todoList.filter(item => item !== itemToEdit)
-
-        itemToEdit.title = this.state.newInputValue
+        const newTitle = this.state.newInputValue
+        this.setState({ showModal: false })
         
-        listWithoutItem.push(itemToEdit)
+        if(newTitle === '') {
+            alert("Please enter a valid item!")
+        }
+        else {
+            const itemToEdit = this.state.editItem
+            const listWithoutItem = this.state.todoList.filter(item => item !== itemToEdit)
 
-        localStorage.setItem("todo-list", JSON.stringify(listWithoutItem))
+            itemToEdit.title = newTitle
+            
+            listWithoutItem.push(itemToEdit)
+            
+            localStorage.setItem("todo-list", JSON.stringify(listWithoutItem))
+            this.setState({ todoList: listWithoutItem })
+            
+            window.location.reload(false)
+        }
+        
+        
     }
     
     handleChange(e) {
@@ -29,16 +44,17 @@ class EditItem extends Component {
     
     render() {
         return (
-            <div>
-                <form onSubmit={() => { this.makeChanges() }}>
-                    <div className="form-group">
-                        <label htmlFor="editTodoItem">Todo Item</label>
-                        <input type="text" className="form-control" id="editTodoItem" defaultValue={this.state.editItem.title} onChange={this.handleChange.bind(this)}/>
-                    </div>
-                    <br/>
-                    <button type="submit" className="btn btn-primary">Save todo item</button>
-                </form>
-            </div>
+            <Modal aria-labelledby="contained-modal-title-vcenter" centered show={this.state.showModal} onHide={() => {this.setState({ showModal: false })}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit To Do Item</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <input type="text" className="form-control" id="editTodoItem" defaultValue={this.state.editItem.title} onChange={this.handleChange.bind(this)}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <button type="submit" className="btn btn-primary" onClick={() => { this.makeChanges() }}>Save changes</button>
+                </Modal.Footer>
+            </Modal>
         )
     }
 }

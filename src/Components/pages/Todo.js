@@ -10,7 +10,8 @@ class Todo extends Component {
             progress: 0,
             showProgress: false,
             ShowEdit: false,
-            itemToEdit: null
+            itemToEdit: null,
+            showModal: "false"
         }
     }
     
@@ -95,6 +96,7 @@ class Todo extends Component {
     handleShowEdit = (todoList) => {
         this.setState({ ShowEdit: true })
         this.setState({ itemToEdit: todoList })
+        this.setState({ showModal: "true" })
     }
     
     componentDidMount() {
@@ -108,6 +110,8 @@ class Todo extends Component {
     render() {
         return (
             <div className="container-fluid w-50">
+                
+                {this.state.ShowEdit && <EditItem visibility={this.state.ShowEdit} itemToEdit={this.state.itemToEdit} allTodos={this.state.todoitem} showModal={this.state.showModal}/>}
                 <br/>
                 <div className="container-fluid">
                     <h1>Current to do items</h1>
@@ -160,8 +164,6 @@ class Todo extends Component {
                         <button type="submit" className="btn btn-primary">Add</button>
                     </form>
                 </div>
-                
-                {this.state.ShowEdit && <EditItem visibility={this.state.ShowEdit} itemToEdit={this.state.itemToEdit} allTodos={this.state.todoitem}/>}
             </div>
         )
     }
