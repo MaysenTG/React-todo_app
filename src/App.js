@@ -2,6 +2,15 @@ import './App.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 import React, { Component } from 'react'
 
+
+// Firebase DB imports
+import db from './config'
+
+import { onSnapshot, collection, query, orderBy } from 'firebase/firestore'
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+
+
 import Navbar from './Components/layouts/Navbar'
 import Todo from './Components/pages/Todo';
 
@@ -9,40 +18,35 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = { 
-        todoitem: null,
-        isLoading: true
+        todoList: null,
+        isLoading: true,
+        user: ''
     }
   }
   
   //Loads the JSON data from the local storage todo-list item when the app loads
   componentDidMount() {
-    const todoData = JSON.parse(localStorage.getItem("todo-list"))
-    
-    if(todoData){ 
-      todoData.sort((a, b) => {
-        return a.checked - b.checked 
-      });
-      
-      this.setState({ todoitem: todoData }) 
+    //const userAuth = prompt("Enter a user to see their todo list")
+    try {
+      const q = query(collection(db, "todolist"), orderBy("completed", "asc"))
+      onSnapshot(q, (snapshot) => {
+        this.setState({ todoList: snapshot.docs.map((doc) => ({...doc.data(), id: doc.id }))})
+        this.setState({ isLoading: false })
+        this.setState({ user: "todolist" })
+    });  
     }
-    
-    // If no list is found, create a single item for demonstration purposes
-    else {
-      this.setState({ todoitem: [{
-        "title": "My first todo item",
-        "completed": false
-      }] })
+    catch(e) {
+      console.log("No user by the name of todolist")
     }
-    
-    this.setState({ isLoading: false })
   }
+
   
   render() {
     return (
       <Router>
           <div>
-            <Navbar />  
-            {this.state.todoitem && <Todo todoItem={this.state.todoitem}/> }
+            <Navbar />
+            {this.state.todoList && <Todo todoItem={this.state.todoList} user={this.state.user}/> }
             
             {this.state.isLoading &&
             <div className="h-400 d-flex justify-content-center align-items-center">
@@ -61,3 +65,4 @@ class App extends Component {
 }
 
 export default App;
+
