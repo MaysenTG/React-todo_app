@@ -1,5 +1,13 @@
 import React, { Component } from 'react'
-import { Modal, Button } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
+
+// Firebase DB imports
+import db from '../../config'
+import { collection, setDoc, doc, addDoc } from 'firebase/firestore'
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+
+
 
 class EditItem extends Component {
     constructor(props) {
@@ -23,13 +31,14 @@ class EditItem extends Component {
         else {
             const itemToEdit = this.state.editItem
             const listWithoutItem = this.state.todoList.filter(item => item !== itemToEdit)
-
+            
             itemToEdit.title = newTitle
-            
             listWithoutItem.push(itemToEdit)
-            
-            localStorage.setItem("todo-list", JSON.stringify(listWithoutItem))
             this.setState({ todoList: listWithoutItem })
+            
+            const docRef = doc(db, "todolist", this.state.editItem);
+            
+            setDoc(docRef, itemToEdit)
             
             window.location.reload(false)
         }
@@ -41,6 +50,10 @@ class EditItem extends Component {
         this.setState({newInputValue: e.target.value});
     }
     
+    componentDidMount() {
+        console.log(this.state.editItem)
+    }
+    
     
     render() {
         return (
@@ -49,7 +62,7 @@ class EditItem extends Component {
                     <Modal.Title>Edit To Do Item</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <input type="text" className="form-control" id="editTodoItem" defaultValue={this.state.editItem.title} onChange={this.handleChange.bind(this)}/>
+                    <input type="text" className="form-control" id="editTodoItem" onChange={this.handleChange.bind(this)}/>
                 </Modal.Body>
                 <Modal.Footer>
                     <button type="submit" className="btn btn-primary" onClick={() => { this.makeChanges() }}>Save changes</button>
