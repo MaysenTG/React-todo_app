@@ -34,6 +34,7 @@ class Todo extends Component {
             this.addItem(newTodo)
         }
         e.target.InputTodoTitle.value = '';
+        alert("Update successful!")
     }
     
     
@@ -132,7 +133,7 @@ class Todo extends Component {
             
             // Updating the data within the Firebase DB
             const docRef = doc(db, "todolist", todoItem.id);
-            setDoc(docRef, itemToEdit)
+            await setDoc(docRef, itemToEdit)
         }
     }
     
