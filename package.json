@@ -2,7 +2,7 @@
   "name": "todo_list_firebase_db",
   "homepage": "http://maysentg.github.io/react-todo-app/",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "dependencies": {
     "@okta/okta-react": "^6.2.0",
     "@okta/okta-signin-widget": "^5.12.0",
