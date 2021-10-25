@@ -148,8 +148,6 @@ class Todo extends Component {
     render() {
         return (
             <div className="container-fluid w-50">
-                
-                {this.state.ShowEdit && <EditItem visibility={this.state.ShowEdit} itemToEdit={this.state.itemToEdit} allTodos={this.state.todoList} showModal={this.state.showModal}/>}
                 <br/>
                 <div className="container-fluid">
                     <h1>Current to do items</h1>
