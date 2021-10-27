@@ -118,7 +118,7 @@ class Todo extends Component {
     handleProcessEdit = async (todoItem) => {
         const newTitle = prompt("Edit the following to-do item", todoItem.title)   
           
-        if(newTitle === '') {
+        if(newTitle === '' || newTitle === null) {
             alert("Please enter a valid item!")
         }
         else {
