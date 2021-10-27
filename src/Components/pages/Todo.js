@@ -29,7 +29,6 @@ class Todo extends Component {
         }
         else {
             var newTodo = {"title": e.target.InputTodoTitle.value, "completed": false}
-        
             this.addItem(newTodo)
         }
         e.target.InputTodoTitle.value = '';
@@ -49,7 +48,7 @@ class Todo extends Component {
         
         
         // Update progress after adding item
-        //this.handleProgress()
+        this.handleProgress()
     }
     
     handleDelete = async (todoItem) => {
@@ -132,6 +131,8 @@ class Todo extends Component {
             // Updating the data within the Firebase DB
             const docRef = doc(db, "todolist", todoItem.id);
             await setDoc(docRef, itemToEdit)
+            
+            this.handleProgress();
         }
     }
     
@@ -141,6 +142,8 @@ class Todo extends Component {
         this.state.todoList.sort((a, b) => {
             return a.checked - b.checked 
         });
+        
+        this.handleProgress();
     }
     
     
